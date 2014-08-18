@@ -1,0 +1,14 @@
+echo $1
+echo $2
+version=$2;
+if [$2 = ""]; then
+version="0.11.0"
+fi
+
+if [ ! -f $1.html ]; then
+wget -O $1.html doc.rust-lang.org/$version/$1/
+fi 
+
+w3m $1.html
+
+
