@@ -6,14 +6,12 @@ fi
 
 doclist=("std" "arena" "collections" "flate" "fourcc" "getopts" "glob" "green" "hexfloat" "libc" "native" "num" "rand" "regex" "rustuv" "semver" "serialize" "sync" "syntax" "term" "test" "time" "uuid" "url" "log");
 
-if [ $1="list" -o $1="" ]; then
-   for ((i=0; i<${#doclist[@]}; i++)) do echo ${doclist[i]};
- done;
-
+if [[ $1 = "list" ||  $1 = "" ]]; then
+   for ((i=0; i<${#doclist[@]}; i++)) do echo ${doclist[i]}; done;
 else
- # if [ ! -f $1.html ]; then
+  if [ ! -f $1.html ]; then
 	 wget -O $1.html doc.rust-lang.org/$version/$1/
- # fi 
+  fi 
    w3m $1.html
 fi
 
