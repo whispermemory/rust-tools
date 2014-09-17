@@ -1,6 +1,8 @@
 extern crate collections;
 extern crate libc;
 extern crate getopts;
+extern crate regex;
+extern crate regex_macros;
 
 use collections::string::String ;
 use std::vec::Vec;
@@ -8,6 +10,7 @@ use getopts::{optflag,getopts,optopt};
 use std::os;
 use libc::funcs::c95::stdlib::exit;
 use std::io::TcpStream;
+use regex::Regex;
 
 #[allow(dead_code)]
 struct Doc {
@@ -54,6 +57,8 @@ fn main(){
     };
 
     wget_crate(String::from_str("std"));
+
+    all_refs_in_html(&String::from_str("abc"),&mut vec!(String::new()));
 }
 
 #[allow(dead_code)]
@@ -89,9 +94,25 @@ fn wget_crate(name : String) -> String  {
     stream.close_read();
     let doccontent = back.unwrap();
     drop(stream);
+    let mut urlvec: Vec<String> = vec!();
+    all_refs_in_html(&doccontent, &mut urlvec);
     return doccontent;
 }
 
-
-
+fn all_refs_in_html(content : &String, v: & mut Vec<String>)  {
+    //<a href=""
+    let re = match Regex::new(r"href=.*?.html") {
+        Ok(re) => re,
+        Err(err) => fail!("{}",err),
+    };
+    let str1=String::from_str("<a href=\"xxx.html\" <b href=\"abc.html\"");
+    let str2="<a href=\"xxx.html\" <b href=\"abc.html\"";
+    for pos in re.find_iter(str2) {
+        println!("{}",pos);
+        match pos {
+            (x,y)=> {v.push(String::from_str(str2.slice_from(x+6).slice_to(y-x-6).as_slice()))},
+            
+        }
+    }
+}
 
